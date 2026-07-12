@@ -1,46 +1,29 @@
-import { useState } from 'react'
-<<<<<<< HEAD
-import Login from './components/Login'
-import UserList from './components/UserList'
+import { Routes, Route } from 'react-router-dom'
+import Layout from './components/Layout'
+import Home from './pages/Home'
+import About from './pages/About'
+import Login from './pages/Login'
+import Dashboard from './pages/Dashboard'
+import Profile from './pages/Profile'
+import Settings from './pages/Settings'
+import NotFound from './pages/NotFound'
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  // Assignment 2 data - dummy students
-  const registeredUsers = [
-    { id: 1, name: 'Rahul Kumar', email: 'rahul@test.com', roll: '101' },
-    { id: 2, name: 'Priya Sharma', email: 'priya@test.com', roll: '102' },
-    { id: 3, name: 'Amit Singh', email: 'amit@test.com', roll: '103' }
-  ];
-
   return (
-    <div>
-      {isLoggedIn ? (
-        <UserList users={registeredUsers} />
-      ) : (
-        <Login onLoginSuccess={setIsLoggedIn} />
-      )}
-=======
-import Login from './Pages/Login'  // idhi add cheyi
-import Register from './pages/Register'  // idhi add cheyi
-
-function App() {
-  const [page, setPage] = useState('home')
-
-  return (
-    <div style={{textAlign: 'center', padding: '50px', fontFamily: 'Arial'}}>
-      <h1>Student Management System</h1>
-      
-      <div style={{margin: '20px'}}>
-        <button onClick={() => setPage('login')} style={{padding: '10px 20px', margin: '10px', cursor: 'pointer'}}>Login</button>
-        <button onClick={() => setPage('register')} style={{padding: '10px 20px', margin: '10px', cursor: 'pointer'}}>Register</button>
-      </div>
-
-      {page === 'login' && <Login />}
-      {page === 'register' && <Register />}
-      {page === 'home' && <p>Please Login or Register</p>}
->>>>>>> ab03d9711b87b4e171b69e51ea2db0119dfe1a50
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="about" element={<About />} />
+        <Route path="login" element={<Login />} />
+        <Route path="dashboard" element={<Dashboard />}>
+          <Route index element={<p>Overview</p>} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
   )
 }
+
 export default App
