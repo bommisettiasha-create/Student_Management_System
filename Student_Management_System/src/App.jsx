@@ -1,26 +1,4 @@
 import { useState } from 'react'
-<<<<<<< HEAD
-import Login from './components/Login'
-import UserList from './components/UserList'
-
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  // Assignment 2 data - dummy students
-  const registeredUsers = [
-    { id: 1, name: 'Rahul Kumar', email: 'rahul@test.com', roll: '101' },
-    { id: 2, name: 'Priya Sharma', email: 'priya@test.com', roll: '102' },
-    { id: 3, name: 'Amit Singh', email: 'amit@test.com', roll: '103' }
-  ];
-
-  return (
-    <div>
-      {isLoggedIn ? (
-        <UserList users={registeredUsers} />
-      ) : (
-        <Login onLoginSuccess={setIsLoggedIn} />
-      )}
-=======
 import Login from './Pages/Login'  // idhi add cheyi
 import Register from './pages/Register'  // idhi add cheyi
 
@@ -39,7 +17,6 @@ function App() {
       {page === 'login' && <Login />}
       {page === 'register' && <Register />}
       {page === 'home' && <p>Please Login or Register</p>}
->>>>>>> ab03d9711b87b4e171b69e51ea2db0119dfe1a50
     </div>
   )
 }
