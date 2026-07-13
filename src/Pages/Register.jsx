@@ -49,3 +49,7 @@ function Register({ onRegister, onSwitch }) {
   );
 }
 export default Register;
+
+
+
+
