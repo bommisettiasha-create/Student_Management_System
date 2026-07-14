@@ -1,21 +1,29 @@
-import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import Button from '../components/Button'
 
-function Login({ setIsLoggedIn }) {
-  const [email, setEmail] = useState('')
-  const navigate = useNavigate()
+const Login = ({ onLogin }) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
 
-  const handleLogin = () => {
-    setIsLoggedIn(true)
-    navigate('/dashboard') // Login ayyaka redirect
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!username ||!password) {
+      setError('All fields are required')
+      return
+    }
+    onLogin(username)
   }
 
   return (
-    <div style={{width: '300px', margin: 'auto'}}>
-      <h2>Login</h2>
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
-      <input type="password" placeholder="Password" />
-      <button onClick={handleLogin}>Login</button>
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2>Admin Login</h2>
+        {error && <p className="error">{error}</p>}
+        <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
+        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+        <Button text="Login" />
+      </form>
     </div>
   )
 }
