@@ -1,18 +1,81 @@
-import Button from './Button'
-const StudentForm = ({ formData, setFormData, handleSubmit, editId }) => {
+import { useState } from "react";
+import axios from "axios";
+
+function StudentForm({ onStudentAdded }) {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    roll: "",
+    course: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData({...formData, [e.target.name]: e.target.value});
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:5003/api/students", formData);
+      alert("Student Added Successfully! ✅");
+      setFormData({name: "", email: "", roll: "", course: ""});
+      onStudentAdded(); // list refresh cheyadaniki
+    } catch (error) {
+      alert("Error adding student ❌");
+      console.log(error);
+    }
+  };
+
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <h3>{editId? 'Edit Student' : 'Add New Student'}</h3>
-      <input placeholder="Name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value })} />
-      <input placeholder="Roll No" value={formData.roll} onChange={e => setFormData({...formData, roll: e.target.value })} />
-      <input placeholder="Branch" value={formData.branch} onChange={e => setFormData({...formData, branch: e.target.value })} />
-      <input placeholder="CGPA" type="number" step="0.1" value={formData.cgpa} onChange={e => setFormData({...formData, cgpa: e.target.value })} />
-      <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value })}>
-        <option>Pending</option>
-        <option>Placed</option>
-      </select>
-      <Button text={editId? 'Update Student' : 'Add Student'} color={editId? '#f39c12' : 'green'} />
-    </form>
-  )
+    <div style={{border: "1px solid #ccc", padding: "20px", borderRadius: "8px", marginBottom: "20px"}}>
+      <h2>Add New Student</h2>
+      <form onSubmit={handleSubmit}>
+        <input 
+          type="text" 
+          name="name"
+          placeholder="Name" 
+          value={formData.name}
+          onChange={handleChange} 
+          required
+          style={{width: "100%", padding: "8px", marginBottom: "10px"}}
+        />
+        
+        <input 
+          type="email" 
+          name="email"
+          placeholder="Email" 
+          value={formData.email}
+          onChange={handleChange} 
+          required
+          style={{width: "100%", padding: "8px", marginBottom: "10px"}}
+        />
+        
+        <input 
+          type="text" 
+          name="roll"
+          placeholder="Roll No" 
+          value={formData.roll}
+          onChange={handleChange} 
+          required
+          style={{width: "100%", padding: "8px", marginBottom: "10px"}}
+        />
+        
+        <input 
+          type="text" 
+          name="course"
+          placeholder="Course" 
+          value={formData.course}
+          onChange={handleChange} 
+          required
+          style={{width: "100%", padding: "8px", marginBottom: "10px"}}
+        />
+        
+        <button type="submit" style={{padding: "10px 20px", background: "#4CAF50", color: "white", border: "none", borderRadius: "4px"}}>
+          Add Student
+        </button>
+      </form>
+    </div>
+  );
 }
-export default StudentForm
+
+export default StudentForm;

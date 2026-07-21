@@ -1,44 +1,40 @@
-function UserList({ students, onLogout }) {
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import StudentCard from './StudentCard';
+
+function UserList() {
+  const [students, setStudents] = useState([]); // [] empty array tho start chey
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const fetchStudents = async () => {
+    try {
+      const res = await axios.get("http://localhost:5003/api/students");
+      setStudents(res.data); // backend res.data lo array pampali
+    } catch (error) {
+      console.log(error);
+      setStudents([]); // error vachina kuda [] pettu
+    }
+    setLoading(false);
+  };
+
+  if (loading) return <p>Loading...</p>
+
   return (
-    <div style={{padding: "20px"}}>
-      <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-        <h1 style={{color: "#667eea"}}>Student Management System</h1>
-        <button onClick={onLogout} style={{padding: "8px 15px", background: "#ff4b5c", color: "white", border: "none", borderRadius: "5px", cursor: "pointer"}}>Logout</button>
-      </div>
-
-      <h2>Card View</h2>
-      <div style={{display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "15px"}}>
-        {students.map((s) => (
-          <div key={s.id} style={{border: "1px solid #ddd", padding: "15px", borderRadius: "10px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)"}}>
-            <h3>{s.name}</h3>
-            <p>Email: {s.email}</p>
-            <p>Roll: {s.roll}</p>
-          </div>
-        ))}
-      </div>
-
-      <h2 style={{marginTop: "30px"}}>Table View</h2>
-      <table style={{width: "100%", borderCollapse: "collapse", marginTop: "10px"}}>
-        <thead style={{background: "#667eea", color: "white"}}>
-          <tr>
-            <th style={{padding: "10px", border: "1px solid #ddd"}}>ID</th>
-            <th style={{padding: "10px", border: "1px solid #ddd"}}>Name</th>
-            <th style={{padding: "10px", border: "1px solid #ddd"}}>Email</th>
-            <th style={{padding: "10px", border: "1px solid #ddd"}}>Roll</th>
-          </tr>
-        </thead>
-        <tbody>
-          {students.map((s) => (
-            <tr key={s.id}>
-              <td style={{padding: "10px", border: "1px solid #ddd"}}>{s.id}</td>
-              <td style={{padding: "10px", border: "1px solid #ddd"}}>{s.name}</td>
-              <td style={{padding: "10px", border: "1px solid #ddd"}}>{s.email}</td>
-              <td style={{padding: "10px", border: "1px solid #ddd"}}>{s.roll}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <h2>Student List</h2>
+      {students.length === 0 ? (
+        <p>No students found</p>
+      ) : (
+        students.map(student => ( // ippudu crash avvadhu
+          <StudentCard key={student._id} student={student} />
+        ))
+      )}
     </div>
-  );
+  )
 }
-export default UserList;
+
+export default UserList

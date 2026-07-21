@@ -1,17 +1,34 @@
-import Button from './Button'
-const StudentCard = ({ student, onEdit, onDelete }) => {
+import axios from "axios";
+
+function StudentCard({ student, onDelete }) {
+  
+  const handleDelete = async () => {
+    if(window.confirm("Are you sure to delete?")){
+      try {
+        await axios.delete(`http://localhost:5002/api/students/${student.id}`);
+        alert("Deleted Successfully!");
+        onDelete(); // list refresh
+      } catch (error) {
+        alert("Error deleting");
+      }
+    }
+  };
+
   return (
-    <div className="card">
-      <h3>{student.name}</h3>
-      <p><b>Roll:</b> {student.roll}</p>
-      <p><b>Branch:</b> {student.branch}</p>
-      <p><b>CGPA:</b> {student.cgpa}</p>
-      <p><b>Status:</b> <span className={student.status === 'Placed'? 'placed' : 'pending'}>{student.status}</span></p>
-      <div className="card-actions">
-        <Button text="Edit" color="#3498db" onClick={() => onEdit(student)} />
-        <Button text="Delete" color="#e74c3c" onClick={() => onDelete(student.id)} />
+    <div style={{border: "1px solid #ddd", padding: "15px", marginBottom: "10px", borderRadius: "8px", display: "flex", justifyContent: "space-between"}}>
+      <div>
+        <h3>{student.name}</h3>
+        <p><b>Email:</b> {student.email}</p>
+        <p><b>Roll:</b> {student.roll}</p>
+        <p><b>Course:</b> {student.course}</p>
       </div>
+      <button 
+        onClick={handleDelete}
+        style={{padding: "8px 15px", background: "red", color: "white", border: "none", borderRadius: "4px", height: "40px"}}>
+        Delete
+      </button>
     </div>
-  )
+  );
 }
-export default StudentCard
+
+export default StudentCard;
