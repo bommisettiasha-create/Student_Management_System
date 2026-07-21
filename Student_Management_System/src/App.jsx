@@ -1,23 +1,17 @@
-import { useState } from 'react'
-import Login from './Pages/Login'  // idhi add cheyi
-import Register from './pages/Register'  // idhi add cheyi
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import StudentList from './StudentList';
 
 function App() {
-  const [page, setPage] = useState('home')
-
   return (
-    <div style={{textAlign: 'center', padding: '50px', fontFamily: 'Arial'}}>
-      <h1>Student Management System</h1>
-      
-      <div style={{margin: '20px'}}>
-        <button onClick={() => setPage('login')} style={{padding: '10px 20px', margin: '10px', cursor: 'pointer'}}>Login</button>
-        <button onClick={() => setPage('register')} style={{padding: '10px 20px', margin: '10px', cursor: 'pointer'}}>Register</button>
+    <BrowserRouter>
+      <div style={{padding: '20px', fontFamily: 'Arial'}}>
+        <h1>Student Management System</h1>
+        <Link to="/">Home</Link>
+        <Routes>
+          <Route path="/" element={<StudentList />} />
+        </Routes>
       </div>
-
-      {page === 'login' && <Login />}
-      {page === 'register' && <Register />}
-      {page === 'home' && <p>Please Login or Register</p>}
-    </div>
+    </BrowserRouter>
   )
 }
-export default App
+export default App;

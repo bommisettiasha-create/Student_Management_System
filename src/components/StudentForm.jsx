@@ -16,7 +16,7 @@ function StudentForm({ onStudentAdded }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5003/api/students", formData);
+      await axios.post("http://localhost:5000/api/students", formData);
       alert("Student Added Successfully! ✅");
       setFormData({name: "", email: "", roll: "", course: ""});
       onStudentAdded(); // list refresh cheyadaniki
