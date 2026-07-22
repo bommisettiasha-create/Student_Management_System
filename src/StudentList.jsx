@@ -1,31 +1,98 @@
-import { useEffect, useState } from 'react';
-import API from './api';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export default function StudentList() {
   const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    API.get('/')
-      .then(res => setStudents(res.data))
-      .catch(() => setError("Backend not running or No data in DB"))
-      .finally(() => setLoading(false));
-  }, []);
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const [sort, setSort] = useState('name');
+  const [order, setOrder] = useState('asc');
 
-  if(loading) return <p>Loading...</p>;
-  if(error) return <p style={{color:'red'}}>{error}</p>;
-  if(students.length === 0) return <p>No students found. Add data in MongoDB first</p>;
+  // FETCH DATA FROM API
+  const fetchStudents = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await axios.get(`http://localhost:5000/api/students`, {
+        params: { search, page, limit, sort, order }
+      });
+      setStudents(res.data.students);
+      setTotalPages(res.data.totalPages);
+    } catch (err) {
+      setError('Failed to fetch students. Server down or Network issue.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Re-run when search, page, sort, order changes
+  useEffect(() => {
+    fetchStudents();
+  }, [search, page, sort, order]);
 
   return (
-    <div>
-      {students.map(s => (
-        <div key={s._id} style={{border:'1px solid gray', margin:'10px', padding:'10px', borderRadius:'8px'}}>
-          <h3>{s.name}</h3>
-          <p>Roll: {s.roll}</p>
-          <p>Course: {s.course}</p>
-        </div>
-      ))}
+    <div style={{ padding: '20px' }}>
+      <h2>Student Records</h2>
+
+      {/* SEARCH + SORT CONTROLS */}
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        <input
+          type="text"
+          placeholder="Search name, email, course..."
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+          style={{ padding: '8px', width: '300px' }}
+        />
+
+        <select value={sort} onChange={(e) => setSort(e.target.value)}>
+          <option value="name">Sort by Name</option>
+          <option value="course">Sort by Course</option>
+          <option value="createdAt">Sort by Date</option>
+        </select>
+
+        <button onClick={() => setOrder(order === 'asc'? 'desc' : 'asc')}>
+          {order === 'asc'? '↑ Asc' : '↓ Desc'}
+        </button>
+      </div>
+
+      {/* LOADING STATE */}
+      {loading && <p>Loading students...</p>}
+
+      {/* ERROR STATE */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {/* EMPTY STATE */}
+      {!loading && students.length === 0 && <p>No students found.</p>}
+
+      {/* DATA TABLE */}
+      {!loading && students.length > 0 && (
+        <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th>Name</th><th>Email</th><th>Roll No</th><th>Course</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students.map(s => (
+              <tr key={s._id}>
+                <td>{s.name}</td><td>{s.email}</td><td>{s.rollNo}</td><td>{s.course}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* PAGINATION CONTROLS */}
+      <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+        <button disabled={page === 1} onClick={() => setPage(page - 1)}>Previous</button>
+        <span>Page {page} of {totalPages}</span>
+        <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next</button>
+      </div>
     </div>
   )
 }
